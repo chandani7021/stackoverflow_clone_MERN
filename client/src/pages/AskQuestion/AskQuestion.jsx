@@ -44,21 +44,7 @@ const AskQuestion = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (User) {
-          if (questionTitle && questionBody && questionTags) {
-            dispatch(
-              askQuestion(
-                {
-                  questionTitle,
-                  questionBody,
-                  questionTags,
-                  userPosted: User.result.name,
-                  userId: User.result._id,
-                },
-                navigate
-              )
-            );
-          } else alert("Please enter all the fields");
-
+          
           // if check Subscription
           if (attempt_Left === 0) {
             alert("Number of Post Exceed the limit \nAdvance Your Subscription !! ");
