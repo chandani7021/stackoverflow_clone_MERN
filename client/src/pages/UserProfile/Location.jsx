@@ -65,7 +65,7 @@ const Location = () => {
               const address = data.results[0].formatted_address;
               setUserAddress(address);
             } else {
-              setUserAddress('');
+              setUserAddress('Address not found');
             }
           })
           .catch((error) => {
