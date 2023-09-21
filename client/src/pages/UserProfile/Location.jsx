@@ -9,6 +9,7 @@ const Location = () => {
     const[longitude,setLongitude] = useState(' ');
     const [userAddress, setUserAddress] = useState('');
     const [fetchingData, setFetchingData] = useState(false);
+    const [buttonClicked, setButtonClicked] = useState(false);
 
     const getLocation = () => {
         if (navigator.geolocation) {
@@ -22,6 +23,11 @@ const Location = () => {
     
               // Fetch user address after obtaining coordinates
               fetchUserAddress(position.coords.latitude, position.coords.longitude);
+            
+               // Set the buttonClicked flag to true
+              setButtonClicked(true);
+    
+            
             },
             handleLocationError
           );
@@ -78,15 +84,18 @@ const Location = () => {
         <h2>Geo Location</h2>
         
         <ul style={{listStyleType: 'none'}}>
-            <li><button onClick={getLocation} disabled={fetchingData}>
+            <li><button onClick={getLocation} disabled={fetchingData || buttonClicked}>
             {fetchingData ? 'Fetching Coordinates and Address...' : 'Get Coords'}
                 </button></li>
+                {buttonClicked && (
+            <>
             <li>Latitude: {latitude} </li>
             <li>Longitude: {longitude}</li>
             <li>User Address: {userAddress}</li>
             {userAddress && <li>User Address: {userAddress}</li>}
             {latitude && longitude &&<LocationTracker />}
-           
+            </>
+        )}
         </ul>
     </div>
   )
