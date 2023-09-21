@@ -1,70 +1,92 @@
 import React, { useState } from 'react'
 import './UserProfile.css'
 import LocationTracker from './LocationTraker'
+import { GOOGLE_MAPS_API_KEY } from '../../configure';
 
 
 const Location = () => {
-    const[latitude, setLatitude] = useState(' ')
-    const[longitude,setLongitude] = useState(' ')
-    
+    const[latitude, setLatitude] = useState(' ');
+    const[longitude,setLongitude] = useState(' ');
+    const [userAddress, setUserAddress] = useState('');
+    const [fetchingData, setFetchingData] = useState(false);
 
     const getLocation = () => {
-        if (navigator.geolocation){
-            navigator.geolocation.getCurrentPosition(showPosition, handleLocationError);
+        if (navigator.geolocation) {
+          // Set the fetching data flag to true
+          setFetchingData(true);
+    
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              setLatitude(position.coords.latitude);
+              setLongitude(position.coords.longitude);
+    
+              // Fetch user address after obtaining coordinates
+              fetchUserAddress(position.coords.latitude, position.coords.longitude);
+            },
+            handleLocationError
+          );
         } else {
-            alert("GeoLocation is not supported by this browser.");
+          alert("GeoLocation is not supported by this browser.");
         }
-    }
+      }
     
-    const showPosition= (position)=> {
-    //    console.log(position)
-        setLatitude(position.coords.latitude);
-        setLongitude(position.coords.longitude);
-    // setUseradd(position.coords.)
-    
-    }
-
-    const handleLocationError=(error)=> {
-        switch(error.code){
-            case error.PERMISSION_DENIED:
-                alert("Denied request for geolocation");
-                break;
-            case error.POSITION_UNAVAILABLE:
-                alert("Location information is unavailable");
-                break;
-            case error.TIMEOUT:
-                alert("Request to get user location timed out");
-                break;
-            case error.UNKNOWN_ERROR:
-                alert("Unknown error occured");
-                break;
-            default:
-                alert("Unknown error occured");
-                break;
+      const handleLocationError = (error) => {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            alert("Denied request for geolocation");
+            break;
+          case error.POSITION_UNAVAILABLE:
+            alert("Location information is unavailable");
+            break;
+          case error.TIMEOUT:
+            alert("Request to get user location timed out");
+            break;
+          case error.UNKNOWN_ERROR:
+            alert("Unknown error occurred");
+            break;
+          default:
+            alert("Unknown error occurred");
+            break;
         }
-    }
-
-    const ulStyle = {
-        listStyleType: 'none', // This removes bullet points
-      };
-
+      }
+    
+      const fetchUserAddress = (lat, lng) => {
+        // Use Google Maps Geocoding API to fetch the address
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_API_KEY}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.results && data.results.length > 0) {
+              const address = data.results[0].formatted_address;
+              setUserAddress(address);
+            } else {
+              setUserAddress('Address not found');
+            }
+          })
+          .catch((error) => {
+            console.error('Error fetching address:', error);
+            setUserAddress('Error fetching address');
+          })
+          .finally(() => {
+            // Set the fetching data flag back to false
+            setFetchingData(false);
+          });
+      }
 
 
   return (
     <div className='geo-location'>
         <h2>Geo Location</h2>
         
-        <ul style={ulStyle}>
-            <li><button onClick={getLocation}>Get Coordinates</button></li>
+        <ul style={{listStyleType: 'none'}}>
+            <li><button onClick={getLocation} disabled={fetchingData}>
+            {fetchingData ? 'Fetching Coordinates and Address...' : 'Get Address'}
+                </button></li>
             <li>Latitude: {latitude} </li>
             <li>Longitude: {longitude}</li>
+            <li>User Address: {userAddress}</li>
         
             <LocationTracker />
-            {/* {
-                latitude && longitude ?
-                <img src={`https://maps.googleapis.com/maps/api/staticmap?center =${latitude},${longitude}&zoom=14&size=400x300&sensor=false&markers=color:red%7c${latitude},${longitude}&key=${GOOGLE_MAPS_API_KEY}`} alt=''/>
-                : null
-            } */}
+           
         </ul>
     </div>
   )

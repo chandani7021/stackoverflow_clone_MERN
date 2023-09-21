@@ -15,7 +15,7 @@ const UserInfoComponent = () => {
   
         // Function to send user information to the server
         const sendUserInfoToServer = async (userInformation) => {
-          try {
+          try { 
             const response = await fetch('https://stackoverflow-clone-server-mv3m.onrender.com/userInfo/user-info', {
               method: 'POST',
               headers: {
