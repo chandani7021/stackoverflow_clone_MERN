@@ -59,7 +59,7 @@ const Location = () => {
               const address = data.results[0].formatted_address;
               setUserAddress(address);
             } else {
-              setUserAddress('Address not found');
+              setUserAddress('');
             }
           })
           .catch((error) => {
@@ -79,13 +79,13 @@ const Location = () => {
         
         <ul style={{listStyleType: 'none'}}>
             <li><button onClick={getLocation} disabled={fetchingData}>
-            {fetchingData ? 'Fetching Coordinates and Address...' : 'Get Address'}
+            {fetchingData ? 'Fetching Coordinates and Address...' : 'Get Coords'}
                 </button></li>
             <li>Latitude: {latitude} </li>
             <li>Longitude: {longitude}</li>
             <li>User Address: {userAddress}</li>
-        
-            <LocationTracker />
+            {userAddress && <li>User Address: {userAddress}</li>}
+            {latitude && longitude &&<LocationTracker />}
            
         </ul>
     </div>
