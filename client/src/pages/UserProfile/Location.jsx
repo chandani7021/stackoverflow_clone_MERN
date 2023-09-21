@@ -88,12 +88,12 @@ const Location = () => {
             {fetchingData ? 'Fetching Coordinates and Address...' : 'Get Coords'}
                 </button></li>
                 {buttonClicked && (
-            <>
-            <li>Latitude: {latitude} </li>
-            <li>Longitude: {longitude}</li>
-            <li>User Address: {userAddress}</li>
-            {userAddress && <li>User Address: {userAddress}</li>}
-            {latitude && longitude &&<LocationTracker />}
+                <>
+                <li>Latitude: {latitude} </li>
+                <li>Longitude: {longitude}</li>
+                <li>User Address: {userAddress}</li>
+                {userAddress && <li>{userAddress}</li>}
+                {latitude && longitude &&<LocationTracker />}
             </>
         )}
         </ul>
