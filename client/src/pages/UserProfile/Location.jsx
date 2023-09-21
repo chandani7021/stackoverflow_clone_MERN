@@ -91,8 +91,7 @@ const Location = () => {
                 <>
                 <li>Latitude: {latitude} </li>
                 <li>Longitude: {longitude}</li>
-                <li>User Address: {userAddress}</li>
-                {userAddress && <li>{userAddress}</li>}
+                {userAddress && <li>User Address:{userAddress}</li>}
                 {latitude && longitude &&<LocationTracker />}
             </>
         )}
