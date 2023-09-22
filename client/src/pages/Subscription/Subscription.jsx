@@ -14,7 +14,7 @@ import { Helmet } from "react-helmet";
 
 const Subscription = () => {
   const dispatch = useDispatch();
-  const { id } = useParams()
+ 
 
   let User = useSelector((state) => state.currentUserReducer);
   const API = useSelector((state) => state.apikeyReducer);

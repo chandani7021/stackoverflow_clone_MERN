@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Questions from "../models/Questions.js";
+import auth from "../models/auth.js";
 
 
 export const postAnswer = async (req, res) => {
@@ -25,6 +26,47 @@ export const postAnswer = async (req, res) => {
     }
 }
 
+
+// Function to calculate user points based on their actions
+const calculateUserPointsAndBadges = async (userId) => {
+    try {
+        // Calculate the number of questions posted by the user
+        const questionsPostedCount = await Questions.countDocuments({ userId });
+
+        // Calculate the number of answers posted by the user
+        const answersPostedCount = await Questions.countDocuments({
+            'answers.userAnswered': userId,
+        });
+
+        // Calculate total points based on user actions
+        const totalPoints = questionsPostedCount * 5 + answersPostedCount * 10;
+
+
+
+        // Check badge eligibility and update badges
+        let badgesEarned = [];
+
+        if (totalPoints >= 10) {
+            badgesEarned.push('Novice Badge');
+        }
+        if (totalPoints >= 50) {
+            badgesEarned.push('Honor Badge');
+        }
+        if (totalPoints >= 100) {
+            badgesEarned.push('Ninja Badge');
+        }
+
+        // Update the user's points and badges in the database
+        await auth.findByIdAndUpdate(userId, { points: totalPoints, badges: badgesEarned });
+
+        return { points: totalPoints, badges: badgesEarned };
+    } catch (error) {
+        console.error('Error calculating user points:', error);
+        throw error;
+    }
+};
+
+// Controller function to assign points and badges to a user
 export const points = async (req, res) => {
     try {
         const { profileData } = req.body;
@@ -33,21 +75,26 @@ export const points = async (req, res) => {
             return res.status(400).json({ error: 'Profile data not provided' });
         }
 
-        // Now you can access the 'profileData' and process it as needed
-        // console.log('Received profile data on the server:', profileData);
+        const userId = profileData.result._id;
 
-        const name = profileData.result.name;
+        // Calculate user points and badges
+        const { points, badges } = await calculateUserPointsAndBadges(userId);
 
-
-        // You can use 'name' or any other properties as needed
-        let answers = await Questions.find({ $and: [{ "answer.userAnswered": name }] });
-        // Send a response back to the client if needed
-        res.json({ "points": answers.length * 5 }); // Replace with the actual response data
+        // Send a response back to the client with points and badges
+        res.json({ points, badges });
     } catch (error) {
         console.error('Error processing data:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+
+
+
+
+
+
+
 
 const updateNoOfQuestions = async (_id, noOfAnswers) => {
     try {

@@ -12,7 +12,7 @@ function LanguageSelector() {
 
     const handleLanguageChange = async (newLanguage) => {
         try {
-            const response = await axios.post('https://stackoverflow-clone-server-mv3m.onrender.com/translation/translate', {
+            const response = await axios.post('http://localhost:5000/translation/translate', { //change backend link
                 text: document.body.innerHTML, // Translate the entire HTML content
                 targetLanguage: newLanguage,
             });

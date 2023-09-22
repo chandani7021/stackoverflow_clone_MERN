@@ -1,50 +1,52 @@
 import React, { useState,useEffect } from 'react'
-// import { useSelector, useDispatch } from 'react-redux'
-import { Helmet } from "react-helmet"
 import Location from './Location'
 import UserInfoComponent from './UserInfo.jsx';
 import UserHistoryComponent from './UserHis.jsx';
 
-// import { useParams } from 'react-router-dom'
 import './UserProfile.css'
 
 
 const ProfileBio = ({ currentProfile}) => {
     
     const [points, setPoints] = useState(0);
+    const [badges, setBadges] = useState([]);
     const [showHistory, setShowHistory] = useState(false);
+    console.log('currentProfile:', currentProfile);
     
-    const Points = async () => {
-        try {
-          // Retrieve 'Profile' data from local storage
-          const profileData = JSON.parse(localStorage.getItem('Profile'));
-      
-          if (!profileData) {
-            console.error('Profile data not found in local storage');
-            return;
-          }
-      
-          const response = await fetch("https://stackoverflow-clone-server-mv3m.onrender.com/answer/points", {
-            method: "POST",
-            headers: {
-              'Content-Type': "application/json"
-            },
-            body: JSON.stringify({ profileData }) // Send the 'Profile' data in the request body
-          });
-      
-          const json = await response.json();
-          setPoints(json.points);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      };
-      
-      useEffect(() => {
-        Points();
-      }, []);
 
-      
-      
+
+    useEffect(() => {
+        // Fetch user points and badges from the server
+        const fetchPointsAndBadges = async () => {
+          try {
+            const profileData = JSON.parse(localStorage.getItem('Profile'));
+    
+            if (!profileData) {
+              console.error('Profile data not found in local storage');
+              return;
+            }
+    
+            const response = await fetch('http://localhost:5000/answer/points', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ profileData }),
+            });
+    
+            const data = await response.json();
+    
+            // Update the points and badges in the state
+            setPoints(data.points);
+            setBadges(data.badges);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+    
+        // Call the fetchPointsAndBadges function when the component mounts
+        fetchPointsAndBadges();
+      }, []);
     
     return (
         <div>
@@ -79,8 +81,17 @@ const ProfileBio = ({ currentProfile}) => {
 
             </div>
             <h4>Achievements</h4>
-            <div>Points: {points}</div>
-            
+                <div>Points: {points}</div>
+                <div>
+                    {badges?.length > 0 ? (
+                    <>
+                        Badges: {badges.join(', ')}
+                    </>
+                    ) : (
+                    <p>No badges earned</p>
+                    )}
+                </div>
+            {/* <RewardButton userId={currentProfile?.userId} /> */}
             <div>
                 <UserInfoComponent />
 

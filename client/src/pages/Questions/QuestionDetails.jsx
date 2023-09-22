@@ -25,8 +25,8 @@ const QuestionDetails = () => {
 
     const location = useLocation()
     // console.log(location)
-    const url = 'https://stack-overflow-clone-by-chandani.netlify.app'
-    // const url = 'http://localhost:3000'
+    // const url = 'https://stack-overflow-clone-by-chandani.netlify.app'
+    const url = 'http://localhost:3000'
 
     const [Answer, setAnswer] = useState('')
 

@@ -48,7 +48,8 @@ export const paymentVerification = async (req, res) => {
             });
 
             res.redirect(
-                `https://stack-overflow-clone-by-chandani.netlify.app/paymentsuccess?reference=${razorpay_payment_id}`
+                // `https://stack-overflow-clone-by-chandani.netlify.app/paymentsuccess?reference=${razorpay_payment_id}`
+                `http://localhost:3000/paymentsuccess?reference=${razorpay_payment_id}`
             );
         }
     } catch (error) {

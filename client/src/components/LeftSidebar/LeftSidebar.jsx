@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 import Globe from '../../assets/Globe.svg'
 
 const LeftSidebar = () => {
-    
+   
   return (
     <div className='left-sidebar' >
         <nav className='side-nav'>

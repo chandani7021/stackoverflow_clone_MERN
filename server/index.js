@@ -7,11 +7,12 @@ import answerRoutes from './routes/Answers.js'
 import paymentRoutes from "./routes/payment.js";
 import subscribeRoutes from "./routes/subscribe.js";
 import userInfoRoutes from "./routes/userInfo.js";
-import translationRoutes from "./routes/translation.js"
+import translationRoutes from "./routes/translation.js";
 import dotenv from 'dotenv';
 
 
-const allowedOrigins = ['https://stack-overflow-clone-by-chandani.netlify.app'];
+// const allowedOrigins = ['https://stack-overflow-clone-by-chandani.netlify.app'];
+const allowedOrigins = ['http://localhost:3000'];
 const app = express();
 dotenv.config();
 app.use(express.json({ limit: "30mb", extended: true }));
@@ -42,6 +43,7 @@ app.use("/payment", paymentRoutes);
 app.use("/subscription", subscribeRoutes);
 app.use("/userInfo", userInfoRoutes);
 app.use("/translation", translationRoutes);
+
 
 
 const PORT = process.env.PORT || 5000;

@@ -5,7 +5,10 @@ const userSchema = mongoose.Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     about: { type: String },
+    points: { type: Number },
+    badges: { type: [String] },
     tags: { type: [String] },
+
     subscription: {
         pack_type: { type: String, default: "free" },
         pack_start_date: { type: Date, default: Date.now },

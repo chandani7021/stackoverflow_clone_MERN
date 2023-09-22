@@ -3,9 +3,9 @@ import mongoose from 'mongoose'
 
 export const AskQuestion = async (req, res) => {
     const postQuestionData = req.body;
-    // const userId = req.userId;
-    const postQuestion = new Questions(postQuestionData);
-    await Questions.findByIdAndUpdate(userId, { $inc: { points: 10 } });
+    const userId = req.userId;
+    const postQuestion = new Questions({ ...postQuestionData, userId });
+    // await Questions.findByIdAndUpdate(userId);
     console.log(req.body)
 
     try {

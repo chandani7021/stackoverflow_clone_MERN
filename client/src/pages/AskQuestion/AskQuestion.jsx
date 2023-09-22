@@ -6,77 +6,74 @@ import { askQuestion } from '../../actions/Question.js'
 import { subscriptionValidationCheck } from '../../actions/subscription'
 
 const AskQuestion = () => {
+  const [questionTitle, setQuestionTitle] = useState("");
+  const [questionBody, setQuestionBody] = useState("");
+  const [questionTags, setQuestionTags] = useState("");
 
-    const [questionTitle, setQuestionTitle] = useState('')
-    const [questionBody, setQuestionBody] = useState('')
-    const [questionTags, setQuestionTags] = useState('')
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const dispatch = useDispatch();
-    const User = useSelector((state) => state.currentUserReducer);
-    const navigate = useNavigate()
+  const User = useSelector((state) => state.currentUserReducer);
+  const subscriptionDetails = User?.result?.subscription;
 
-    
-    const subscriptionDetails = User?.result?.subscription;
-
-    let numberOfQues = subscriptionDetails?.attempts;
+  let numberOfQues = subscriptionDetails?.attempts || 0;
 
   // Checking the user subscription-Pack's Validity expire or not
-    useEffect(() => {
-        const id = User?.result?._id;
-        dispatch(subscriptionValidationCheck({ id }));
-    }, [User, dispatch]);
+  useEffect(() => {
+    const id = User?.result?._id;
+    dispatch(subscriptionValidationCheck({ id }));
+  }, [User, dispatch]);
 
-    useEffect(() => {
-        if (User !== null) {
-        if (!localStorage.getItem("TryLeft")) {
-            // If there no data create a data ( it happen after 24hrs)
-            localStorage.setItem("TryLeft", JSON.stringify({ attempt: numberOfQues }));
-        }
-        }
-    }, [User, numberOfQues]);
-
-    // If After Create , Get data
-    if (localStorage.getItem("TryLeft")) {
-        var attempt_Left = JSON.parse(localStorage.getItem("TryLeft")).attempt;
+  useEffect(() => {
+    if (User !== null) {
+      if (!localStorage.getItem("TryLeft")) {
+        // If there no data create a data ( it happen after 24hrs)
+        localStorage.setItem("TryLeft", JSON.stringify({ attempt: numberOfQues }));
+      }
     }
+  }, [User, numberOfQues]);
 
+  // If After Create , Get data
+  if (localStorage.getItem("TryLeft")) {
+    var attempt_Left = JSON.parse(localStorage.getItem("TryLeft")).attempt;
+  }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (User) {
-          
-          // if check Subscription
-          if (attempt_Left === 0) {
-            alert("Number of Post Exceed the limit \nAdvance Your Subscription !! ");
-          } else {
-            if (questionTitle && questionBody && questionTags) {
-              // Decrease the Number
-              attempt_Left = attempt_Left - 1;
-              localStorage.setItem("TryLeft", JSON.stringify({ attempt: attempt_Left }));
-    
-              dispatch(
-                askQuestion(
-                  {
-                    questionTitle,
-                    questionBody,
-                    questionTags,
-                    userPosted: User.result.name,
-                    userId: User.result._id,
-                  },
-                  navigate
-                )
-              );
-            } else alert("Please enter all the fields");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (User) {
+      // if check Subscription
+      if (attempt_Left === 0) {
+        alert("Number of Post Exceed the limit \nAdvance Your Subscription !! ");
+      } else {
+        if (questionTitle && questionBody && questionTags) {
+          // Decrease the Number
+          if (attempt_Left > 0) { 
+            attempt_Left = attempt_Left - 1;
+            localStorage.setItem("TryLeft", JSON.stringify({ attempt: attempt_Left }));
           }
-        } else alert("Login to ask question");
-      };
-   
+           // Dispatch the action to save the question
+          dispatch(
+              askQuestion(
+                {
+                  questionTitle,
+                  questionBody,
+                  questionTags,
+                  userPosted: User.result.name,
+                },
+                navigate('/')
+              )
+            );
 
-    const handleEnter = (e) => {
-        if(e.key === 'Enter'){
-            setQuestionBody(questionBody + "\n")
-        }
+        } else alert("Please enter all the fields");
+      }
+    } else alert("Login to ask question");
+  };
+
+  const handleEnter = (e) => {
+    if (e.key === "Enter") {
+      setQuestionBody(questionBody + "\n");
     }
+  };
     
     return (
         <div className='ask-question'>

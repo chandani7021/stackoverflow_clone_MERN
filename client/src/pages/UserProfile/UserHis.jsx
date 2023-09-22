@@ -6,7 +6,8 @@ const UserHistoryComponent = () => {
 
   useEffect(() => {
     // Fetch user history data from the server
-    fetch('https://stackoverflow-clone-server-mv3m.onrender.com/userInfo/history')
+    // fetch('https://stackoverflow-clone-server-mv3m.onrender.com/userInfo/history')
+    fetch('http://localhost:5000/userInfo/history')
       .then((response) => response.json())
       .then((data) => {
         if (data && data.userHistory && data.userHistory.length > 0) {
